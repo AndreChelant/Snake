@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snake</title>
+    <script type="text/javascript" src = "jquery-2.1.3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<section  class="main"></section>
+<br><br>
+<section class="score"><p>your score is: <span id="TheScore">0</span></p></section>
+<script type="text/javascript">
+
+    var oldN = 0;
+
+        var direction = 'r';
+        var fieldSize = 10;
+        var active = $('.on'),
+                xActive = active.attr('x') * 1,
+                yActive = active.attr('y') * 1,
+                next = $('[x=' + xActive + '][y=' + yActive + ']');
+        /////////////////////////////////////////////////   fruitPosition  ///////////////////////////////////////////
+        var scoreFunc =   function(score){
+           document.getElementById('TheScore').innerText = score
+         };
+        var fruitPosition = function () {
+
+
+//            if (score % 3 == 0){
+//               var m += 5;
+//            }
+            var fruitX = Math.floor((Math.random() * (fieldSize + oldN)));
+            var fruitY = Math.floor((Math.random() * (fieldSize +  oldN)));
+            if ($('[y=' + fruitY + '][x=' + fruitX + ']').is('.on, .fruit , .barricade , [y=4][x=5]')) {
+                fruitPosition();
+            }
+            else {
+                $('[y=' + fruitY + '][x=' + fruitX + ']').addClass('fruit');
+            }
+
+        };
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        $(function () {
+            var n = 0;
+
+            var length = 6,
+                    i = length;
+            var xAnother = active.attr('x') * 1,
+                    yAnother = active.attr('y') * 1;
+            var direction = 'r';
+            var interval = 300;
+            var score = 0;
+            var oldDirection;
+//
+//////////////////////////////////////////////////   create field  /////////////////////////////////////////////////
+            var createField = function () {
+                var xActive = 0, yActive = 0;
+
+                if ($(".head").length !== 0) {
+                    xActive = $(".head").attr('x') * 1,
+                            yActive = $(".head").attr('y') * 1;
+                }
+//
+
+                for (var i = 0; i < fieldSize; i++) {
+                    for (var j = 0; j < fieldSize; j++) {
+
+                        $('.main').append('<div y=' + i + ' x=' + j + ' class="off"></div>');
+                        if (j == fieldSize - 1) {
+                            $('.main').append('<br/>');
+                        }
+                    }
+                }
+
+                $("[x=" + xActive + "][y=" + yActive + "]").addClass('head').addClass('on');
+
+                $('[y=4][x=5]').attr('class', 'barricade');
+                $('[y=5][x=5]').attr('class', 'barricade');
+                $('[y=6][x=5]').attr('class', 'barricade');
+
+                $('[y=0][x=8]').attr('class', 'barricade');
+                $('[y=8][x=1]').attr('class', 'barricade');
+                $('[y=8][x=2]').attr('class', 'barricade');
+
+                fruitPosition();
+                fruitPosition();
+            }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//        var createSnake = function () {
+//            $('[y=0][x=0]').attr('class', 'on head');
+//        }
+
+/////////////////////////////////////////////  move function  ///////////////////////////////////////////////////////
+            var move = function () {
+                var active = $('.head'),
+                        xActive = active.attr('x') * 1,
+                        yActive = active.attr('y') * 1,
+                        next = $('[x=' + xActive + '][y=' + yActive + ']');
+
+
+                for (var i = length; i > 1; i--) {
+
+
+                    next = $('[x=' + xAnother + '][y=' + yAnother + ']');
+                    $('.' + i).removeClass('' + i).addClass('' + (i + 1));
+                }
+                $('.' + (length + 1)).prop('class', 'off')
+                active.removeClass('head').addClass('2');
+
+                switch (direction) {
+
+                    case 'r':
+                        if (xActive >= (fieldSize + n) - 1) {
+                            xActive = -1;
+                        }
+                        next = $('[x=' + (xActive + 1 ) + '][y=' + yActive + ']');
+                        break;
+
+                    case 'l':
+                        if (xActive <= 0) {
+                            xActive = (fieldSize + n);
+                        }
+                        next = $('[x=' + (xActive - 1 ) + '][y=' + yActive + ']')
+                        //console.log(next)
+                        break;
+
+                    case 'u':
+                        if (yActive <= 0) {
+                            yActive = (fieldSize + n);
+                            console.log(n);
+                        }
+                        next = $('[x=' + xActive + '][y=' + (yActive - 1) + ']');
+
+                        //console.log(next)
+                        break;
+
+                    case 'd':
+                        if (yActive >= (fieldSize + n) - 1) {
+                            yActive = -1;
+                        }
+                        next = $('[x=' + xActive + '][y=' + (yActive + 1) + ']')
+
+                        break;
+
+                }
+                for (var i = 2; i <= length; i++) {
+                    if (next.hasClass(i)) {
+                        for (var j = i + 1; j <= length; j++)
+                            $('.' + j).prop('class', 'off')
+                        length = i - 1;
+                    }
+                }
+                if (next.hasClass('fruit') && next.hasClass('barricade fruit') == false ) {
+                   -length++;
+                    fruitPosition();
+                    score++;
+                      scoreFunc(score);
+                    if (score % 3 == 0 && n <=5) {
+                        var m = 5;
+                        n += 5 ;
+
+
+                       if (n <=25) {
+                           ///////   oldN == 30 ??????????????????/?
+                           oldN = n;
+                            console.log(n);
+                           console.log(oldN);
+                            for (j = 0; j < fieldSize + n; j++) {
+                                for (i = (fieldSize + n) - 1; i >= 10 + (n - m); i--) {
+//                                if (n >= 10) {
+//                                    $('div').css({'width': '15px', 'height': '15px'});
+//                                }
+                                    $('<div y=' + j + ' x=' + i + ' class="off"></div>').insertAfter('[x=' + ((9 + n) - m) + '][y=' + j + ']');
+                                }
+                            }
+                            for (i = 10 + (n - m); i < fieldSize + n; i++) {
+                                for (j = 0; j < fieldSize + n; j++) {
+//                                if (n >= 10) {
+//                                    $('div').css({'width': '25px', 'height': '25px'});
+//                                }
+                                    $('<div y=' + i + ' x=' + j + ' class="off"></div>').appendTo('.main');
+                                    if (j == (fieldSize + n) - 1) {
+//                                    if (n >= 10) {
+//                                        $('div').css({'width': '25px', 'height': '25px'});
+//                                    }
+                                        $('.main').append('<br/>');
+                                    }
+
+                                }
+                            }
+
+                            if (n == 10) {
+                                $('[y=8][x=13]').attr('class', 'barricade');
+                                $('[y=9][x=13]').attr('class', 'barricade');
+                                $('[y=10][x=11]').attr('class', 'barricade');
+                                $('[y=10][x=12]').attr('class', 'barricade');
+                                $('[y=10][x=13]').attr('class', 'barricade');
+
+
+                                $('[y=13][x=12]').attr('class', 'barricade');
+                                $('[y=13][x=13]').attr('class', 'barricade');
+                                $('[y=13][x=14]').attr('class', 'barricade');
+
+                                $('[y=12][x=2]').attr('class', 'barricade');
+                                $('[y=13][x=2]').attr('class', 'barricade');
+                                $('[y=14][x=2]').attr('class', 'barricade');
+                            }
+                            if (n == 20) {
+                                $('[y=23][x=23]').attr('class', 'barricade');
+                                $('[y=24][x=23]').attr('class', 'barricade');
+                                $('[y=26][x=21]').attr('class', 'barricade');
+                                $('[y=26][x=22]').attr('class', 'barricade');
+                                $('[y=26][x=23]').attr('class', 'barricade');
+
+
+                                $('[y=18][x=20]').attr('class', 'barricade');
+                                $('[y=18][x=21]').attr('class', 'barricade');
+                                $('[y=18][x=22]').attr('class', 'barricade');
+
+                                $('[y=15][x=22]').attr('class', 'barricade');
+                                $('[y=16][x=22]').attr('class', 'barricade');
+                                $('[y=17][x=22]').attr('class', 'barricade');
+                            }
+
+                        if(n==25){
+                            $('[y=32][x=4]').attr('class', 'barricade');
+                            $('[y=30][x=5]').attr('class', 'barricade');
+                            $('[y=31][x=6]').attr('class', 'barricade');
+                            $('[y=29][x=7]').attr('class', 'barricade');
+                            $('[y=28][x=9]').attr('class', 'barricade');
+
+
+                            $('[y=19][x=7]').attr('class', 'barricade');
+                            $('[y=19][x=8]').attr('class', 'barricade');
+                            $('[y=19][x=9]').attr('class', 'barricade');
+
+                            $('[y=20][x=7]').attr('class', 'barricade');
+                            $('[y=20][x=9]').attr('class', 'barricade');
+
+                            $('[y=21][x=7]').attr('class', 'barricade');
+                            $('[y=21][x=8]').attr('class', 'barricade');
+                            $('[y=21][x=9]').attr('class', 'barricade');
+
+
+                            $('[y=3][x=27]').attr('class', 'barricade');
+                            $('[y=5][x=27]').attr('class', 'barricade');
+
+                            $('[y=7][x=27]').attr('class', 'barricade');
+                            $('[y=9][x=27]').attr('class', 'barricade');
+
+                        }
+                        }
+
+//                        var FruitPositionNew = function () {
+//
+//
+////            if (score % 3 == 0){
+////               var m += 5;
+////            }
+//                            var fruitX = Math.floor((Math.random() * (fieldSize + n)));
+//                            var fruitY = Math.floor((Math.random() * (fieldSize + n)));
+//                            if ($('[y=' + fruitY + '][x=' + fruitX + ']').is('.on, .fruit , .barricade , [y=4][x=5]')) {
+//                                FruitPositionNew();
+//                            }
+//                            else {
+//                                $('[y=' + fruitY + '][x=' + fruitX + ']').addClass('fruit');
+//                            }
+//
+//                        };
+//                        FruitPositionNew();
+//                        FruitPositionNew();
+                    }
+                }
+
+                if (next.hasClass('barricade')) {
+                    if (score < 10)
+                        alert("Game Over" + "\n" + "Your score is:" + score + "\n" + "Noob");
+                    else if (score >= 10 && score < 30)
+                        alert("Game Over" + "\n" + "Your score is:" + score + "\n" + "Pretty good maan");
+                    else if (score >= 30 && score < 60)
+                        alert("Game Over" + "\n" + "Your score is:" + score + "\n" + "Wow");
+                    else if (score >= 60 && score < 90)
+                        alert("Game Over" + "\n" + "Your score is:" + score + "\n" + "Awesome");
+                    else if (score > 90 && score <= 99)
+                        alert("Game Over" + "\n" + "Your score is:" + score + "\n" + "Ohhhhh shiieet, it's craaaaazyyy");
+                    location.reload();
+                }
+
+                if (length >= 99) {
+
+                    alert('???????!');
+                    length = 6;
+
+
+                }
+                next.prop('class', 'on head');
+                oldDirection = direction;
+
+            };
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            createField();
+///////////////////////////////////////CONTROLS//////////////////////////////////////////////////////////////////////
+            xActive = active.attr('x') * 1,
+                    yActive = active.attr('y') * 1;
+            next = $('[x=' + xActive + '][y=' + yActive + ']');
+
+            $(document).on('keydown', function (e) {
+                // body...
+                switch (e.which) {
+
+                    case 40:
+                        direction = oldDirection == 'u' ? oldDirection : 'd';
+                        break;
+
+                    case 38:
+                        direction = oldDirection == 'd' ? oldDirection : 'u'
+                        break;
+
+
+                    case 39:
+                        direction = oldDirection == 'l' ? oldDirection : 'r'
+                        break;
+
+                    case 37:         // ????
+                        direction = oldDirection == 'r' ? oldDirection : 'l'
+                        break;
+
+
+                }
+                ;
+                if (oldDirection == direction) {
+                    move();
+                }
+            });
+
+            setInterval(function () {
+                move(
+                )
+            }, interval);
+
+        });
+
+
+</script>
+</body>
+</html>

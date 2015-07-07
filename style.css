@@ -1,0 +1,54 @@
+div
+{
+	border: 1px solid darkgreen;
+	background-color: white;
+	width: 30px;
+	height:30px;
+	display: inline-block;
+}
+ .main
+{
+
+	 margin-left: 30%;
+     margin-top: 10%;
+}
+.off
+{
+	background-color:yellow;
+}
+.on
+{
+	background-color:lightgreen;
+}
+.fruit
+{
+	background-color: red;
+}
+.head
+{
+	background-color: green;
+}
+.barricade
+{
+	background-color: dodgerblue;
+}
+header {
+	margin: auto;
+	min-width: 250px;
+	max-width: 250px;
+	background-color: #fff;
+	border-radius: 6px 6px 6px 6px;
+	margin-top: 37px;
+	overflow: hidden;
+	box-shadow: 1px 1px 72px 10px black;
+	min-height:  250px;
+
+}
+.score{
+    margin:auto;
+	max-width: 250px;
+	min-width: 250px;
+	min-height:  250px;
+	border-color: black;
+	border-width: 50px;
+}
